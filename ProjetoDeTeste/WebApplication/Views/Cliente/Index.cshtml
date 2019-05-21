@@ -1,0 +1,165 @@
+﻿@model WebApplication.Models.ClienteModel
+
+@{
+    <style type="text/css">
+        label {
+            text-align: left !important;
+        }
+    </style>
+}
+
+<div id="mensagem" name="mensagem" style="display: none; background-color: #ff2d296b; text-align:center; height: 40px; padding-top: 5px; font-size: 20px;"><b>mensagem</b></div>
+<div class="jumbotron row topJumboTrom" id="TopoPesquisa">
+    <div class="col-md-8 form-group row">
+        <div class="col-md-2">
+            <lable>Nome cliente</lable>
+        </div>
+        <div class="col-md-10">
+            <input type="text" class="form-control" id="ClientePesquisar" name="ClientePesquisar" />
+        </div>
+    </div>
+    <div class="col-md-1">
+        <button class="btn btn-primary" id="btPesquisar">Pesquisar</button>
+    </div>
+    <div class="col-md-1">
+        <button class="btn btn-primary" id="btNovo">Novo Cliente</button>
+    </div>
+</div>
+
+<div id="DvListarClientes"></div>
+
+<script src="~/Scripts/Views/Cliente.js"></script>
+
+<!-- Modal para cadastrar e alterar cliente -->
+<div class="modal fade" id="ModalCadastrarCliente" tabindex="-1" role="dialog" aria-labelledby="fatorFModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog border-dark">
+        <div class="modal-content" style="width: 200%; margin-left: -50%;">
+            <!-- Modal Header -->
+            <div id="mensagemModal" name="mensagem" style="display: none; background-color: #ff2d296b; text-align:center; height: 40px; padding-top: 5px; font-size: 20px;"><b>mensagem</b></div>
+
+            <div class="modal-header">
+                <div class="col-md-11">
+                    <h3 class="modal-title">Cadastrar cliente</h3>
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+            </div>
+            <!-- Modal body -->
+            <!--------------------------------------------------->
+
+            @using (Html.BeginForm("Salvar", "Cliente", FormMethod.Post, new { name = "frmCliente", id = "frmCliente" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="IdCliente" value="@Model.Id" />
+
+                <fieldset>
+                    <legend>@ViewBag.Title</legend>
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <div class="form-group row col-md-12">
+                            <div class="form-group col-md-6">
+                                @Html.LabelFor(model => model.RazaoSocial_Nome, htmlAttributes: new { @class = "control-label col-md-3" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.RazaoSocial_Nome, new { htmlAttributes = new { @class = "form-control", @maxlength = "60" } })
+                                    @Html.ValidationMessageFor(model => model.RazaoSocial_Nome, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(model => model.CNPJ_CPF, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.CNPJ_CPF, new { htmlAttributes = new { @class = "form-control", @maxlength = "20" } })
+                                    @Html.ValidationMessageFor(model => model.CNPJ_CPF, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(model => model.Telefone, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Telefone, new { htmlAttributes = new { @class = "form-control celularClass", @maxlength = "15" } })
+                                    @Html.ValidationMessageFor(model => model.Telefone, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row col-md-12">
+                            <div class="form-group col-md-2">
+                                @Html.LabelFor(model => model.CEP, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.CEP, new { htmlAttributes = new { @class = "form-control cepClass", @maxlength = "9" } })
+                                    @Html.ValidationMessageFor(model => model.CEP, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group col-md-5">
+                                @Html.LabelFor(model => model.Logradouro, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Logradouro, new { htmlAttributes = new { @class = "form-control", @maxlength = "50", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.Logradouro, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group col-md-2">
+                                @Html.LabelFor(model => model.Logradouro_Numero, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Logradouro_Numero, new { htmlAttributes = new { @class = "form-control", @maxlength = "50" } })
+                                    @Html.ValidationMessageFor(model => model.Logradouro_Numero, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(model => model.Logradouro_Complemento, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Logradouro_Complemento, new { htmlAttributes = new { @class = "form-control", @maxlength = "8" } })
+                                    @Html.ValidationMessageFor(model => model.Logradouro_Complemento, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row col-md-12">
+                            <div class="form-group col-md-4">
+                                @Html.LabelFor(model => model.Logradouro_Bairro, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Logradouro_Bairro, new { htmlAttributes = new { @class = "form-control", @maxlength = "8", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.Logradouro_Bairro, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                @Html.LabelFor(model => model.Logradouro_Cidade, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Logradouro_Cidade, new { htmlAttributes = new { @class = "form-control", @maxlength = "40", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.Logradouro_Cidade, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group col-md-2">
+                                @Html.LabelFor(model => model.Logradouro_UF, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Logradouro_UF, new { htmlAttributes = new { @class = "form-control", @maxlength = "2", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.Logradouro_UF, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row col-md-12">
+                            <div class="form-group col-md-4">
+                                @Html.LabelFor(model => model.SLA_RespostaTempo, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.SLA_RespostaTempo, new { htmlAttributes = new { @class = "form-control", @maxlength = "30", @Value = "4" } })
+                                    @Html.ValidationMessageFor(model => model.SLA_RespostaTempo, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            }
+
+            <!--------------------------------------------------->
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <div class="col-md-12">
+                    <button id="btnFecharCliente" type="button" class="btn btn-danger">&nbsp;&nbsp;&nbsp;Fechar&nbsp;&nbsp;&nbsp;</button>
+                    <button id="btnSalvarCliente" type="button" class="btn btn-outline-success">&nbsp;&nbsp;&nbsp;Salvar&nbsp;&nbsp;&nbsp;</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
